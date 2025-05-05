@@ -9,10 +9,13 @@ import com.devdogukan.tasks.mappers.TaskListMapper;
 import com.devdogukan.tasks.services.TaskListService;
 
 import java.util.List;
+import java.util.Optional;
+import java.util.UUID;
 
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 
@@ -40,6 +43,15 @@ public class TaskListController {
     public ResponseEntity<TaskListDto> createTaskList(@RequestBody TaskListDto taskListDto) {
         TaskList createTaskList = taskListService.createTaskList(taskListMapper.fromDto(taskListDto));
         return new ResponseEntity<>(taskListMapper.toDto(createTaskList), HttpStatus.CREATED);
+    }
+
+    @GetMapping(path = "/{task_list_id}")
+    public ResponseEntity<TaskListDto> getTaskList(@PathVariable("task_list_id") UUID taskListId) {
+        Optional<TaskList> foundTaskList = taskListService.getTaskList(taskListId);
+
+        return foundTaskList.map(taskList -> {
+            return new ResponseEntity<>(taskListMapper.toDto(taskList), HttpStatus.OK);
+        }).orElse(new ResponseEntity<>(HttpStatus.NOT_FOUND));
     }
 
 }
