@@ -16,7 +16,7 @@ public class TaskListMapperImpl implements TaskListMapper {
 
     private final TaskMapper taskMapper;
 
-    public TaskListMapperImpl(TaskMapper taskMapper) {
+    public TaskListMapperImpl(final TaskMapper taskMapper) {
         this.taskMapper = taskMapper;
     }
 
