@@ -2,6 +2,7 @@ package com.devdogukan.tasks.services.impl;
 
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.Objects;
 import java.util.Optional;
 import java.util.UUID;
 
@@ -34,10 +35,10 @@ public class TaskServiceImpl implements TaskService {
     @Override
     public Task createTask(UUID taskListId, Task task) {
         if (task.getId() != null) {
-            throw new IllegalArgumentException("Task list already has an ID!");
+            throw new IllegalArgumentException("Task already has an ID!");
         }
         if (task.getTitle() == null || task.getTitle().isBlank()) {
-            throw new IllegalArgumentException("Task list title must be present!");
+            throw new IllegalArgumentException("Task title must be present!");
         }
 
         TaskPriority taskPriority = Optional.ofNullable(task.getPriority()).orElse(TaskPriority.MEDIUM);
@@ -63,6 +64,37 @@ public class TaskServiceImpl implements TaskService {
     @Override
     public Optional<Task> getTask(UUID taskListId, UUID taskId) {
         return taskRepository.findByTaskListIdAndId(taskListId, taskId);
+    }
+
+    @Override
+    public Task updateTask(UUID taskListId, UUID taskId, Task task) {
+        if (null == task.getId()) {
+            throw new IllegalArgumentException("Task must have an ID!");
+        }
+
+        if (!Objects.equals(task.getId(), taskId)) {
+            throw new IllegalArgumentException("Attemting to change task ID, this is not permitted!");
+        }
+
+        if (null == task.getPriority()) {
+            throw new IllegalArgumentException("Task must have a valid priority!");
+        }
+
+        if (null == task.getStatus()) {
+            throw new IllegalArgumentException("Task must have a valid status!");
+        }
+
+        Task existingTask = taskRepository.findByTaskListIdAndId(taskListId, taskId)
+                .orElseThrow(() -> new IllegalArgumentException("Task not found!"));
+
+        existingTask.setTitle(task.getTitle());
+        existingTask.setDescription(task.getDescription());
+        existingTask.setDueDate(task.getDueDate());
+        existingTask.setPriority(task.getPriority());
+        existingTask.setStatus(task.getStatus());
+        existingTask.setUpdated(LocalDateTime.now());
+
+        return taskRepository.save(existingTask);
     }
 
 }
