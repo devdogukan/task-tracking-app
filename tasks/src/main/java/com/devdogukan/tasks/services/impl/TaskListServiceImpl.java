@@ -12,6 +12,8 @@ import com.devdogukan.tasks.domain.entities.TaskList;
 import com.devdogukan.tasks.repositories.TaskListRepository;
 import com.devdogukan.tasks.services.TaskListService;
 
+import jakarta.transaction.Transactional;
+
 @Service
 public class TaskListServiceImpl implements TaskListService {
 
@@ -52,6 +54,7 @@ public class TaskListServiceImpl implements TaskListService {
     }
 
     @Override
+    @Transactional
     public TaskList updateTaskList(UUID taskListId, TaskList taskList) {
         if (null == taskList.getId()) {
             throw new IllegalArgumentException("Task list must have an ID!");

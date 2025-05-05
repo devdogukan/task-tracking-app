@@ -16,6 +16,8 @@ import com.devdogukan.tasks.repositories.TaskRepository;
 import com.devdogukan.tasks.services.TaskListService;
 import com.devdogukan.tasks.services.TaskService;
 
+import jakarta.transaction.Transactional;
+
 @Service
 public class TaskServiceImpl implements TaskService {
 
@@ -67,6 +69,7 @@ public class TaskServiceImpl implements TaskService {
     }
 
     @Override
+    @Transactional
     public Task updateTask(UUID taskListId, UUID taskId, Task task) {
         if (null == task.getId()) {
             throw new IllegalArgumentException("Task must have an ID!");
@@ -97,4 +100,9 @@ public class TaskServiceImpl implements TaskService {
         return taskRepository.save(existingTask);
     }
 
+    @Override
+    @Transactional
+    public void deleteTask(UUID taskListId, UUID taskId) {
+        taskRepository.deleteByTaskListIdAndId(taskListId, taskId);
+    }
 }
