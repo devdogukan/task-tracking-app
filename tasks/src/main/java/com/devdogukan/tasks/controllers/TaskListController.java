@@ -18,6 +18,7 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.PutMapping;
 
 @RestController
 @RequestMapping(path = "/task-lists")
@@ -52,6 +53,16 @@ public class TaskListController {
         return foundTaskList.map(taskList -> {
             return new ResponseEntity<>(taskListMapper.toDto(taskList), HttpStatus.OK);
         }).orElse(new ResponseEntity<>(HttpStatus.NOT_FOUND));
+    }
+
+    @PutMapping(path = "/{task_list_id}")
+    public ResponseEntity<TaskListDto> updateTaskList(
+            @PathVariable("task_list_id") UUID taskListId,
+            @RequestBody TaskListDto taskListDto) {
+
+        TaskList updatedTaskLis = taskListService.updateTaskList(taskListId, taskListMapper.fromDto(taskListDto));
+        return new ResponseEntity<>(taskListMapper.toDto(updatedTaskLis), HttpStatus.OK);
+
     }
 
 }
