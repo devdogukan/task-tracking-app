@@ -9,6 +9,7 @@ import com.devdogukan.tasks.mappers.TaskMapper;
 import com.devdogukan.tasks.services.TaskService;
 
 import java.util.List;
+import java.util.Optional;
 import java.util.UUID;
 
 import org.springframework.http.HttpStatus;
@@ -45,6 +46,17 @@ public class TaskController {
         Task savedTask = taskService.createTask(taskListId, taskMapper.fromDto(taskDto));
 
         return new ResponseEntity<>(taskMapper.toDto(savedTask), HttpStatus.OK);
+    }
+
+    @GetMapping(path = "/{task_id}")
+    public ResponseEntity<TaskDto> getTask(
+            @PathVariable("task_list_id") UUID taskListId,
+            @PathVariable("task_id") UUID taskId) {
+        Optional<Task> result = taskService.getTask(taskListId, taskId);
+
+        return result.map(task -> {
+            return new ResponseEntity<>(taskMapper.toDto(task), HttpStatus.OK);
+        }).orElse(new ResponseEntity<>(HttpStatus.NOT_FOUND));
     }
 
 }
