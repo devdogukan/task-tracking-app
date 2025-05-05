@@ -1,53 +1,21 @@
-//import './App.css'
-import axios from 'axios';
-import { useEffect, useState } from 'react';
-
-interface Task {
-  id: number;
-  title: string;
-  description: string;
-}
+import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-dom';
+import { ThemeProvider } from './context/ThemeContext';
+import HomePage from './pages/HomePage';
+import TaskListPage from './pages/TaskListPage';
+import './index.css';
 
 function App() {
-
-  const [data, setData] = useState<Task[]>([]);
-  const [loading, setLoading] = useState(true);
-
-  useEffect(() => {
-    const fetchData = async () => {
-      try {
-        const response = await axios.get('http://localhost:8080/task-lists');
-        setData(response.data);
-      } catch (error) {
-        console.error('Error fetching data:', error);
-      } finally {
-        setLoading(false);
-      }
-    };
-
-    fetchData();
-  }, []);
-
-  if (loading) {
-    return <div>Loading...</div>;
-  }
-  if (!data) {
-    return <div>No data available</div>;
-  }
-
   return (
-    <div>
-      <h1>Data from API</h1>
-      <ul>
-        {data.map((item: Task) => (
-          <li key={item.id}>
-            <h2>{item.title}</h2>
-            <p>{item.description}</p>
-          </li>
-        ))}
-      </ul>
-    </div>
+    <ThemeProvider>
+      <Router>
+        <Routes>
+          <Route path="/" element={<HomePage />} />
+          <Route path="/task-lists/:taskListId" element={<TaskListPage />} />
+          <Route path="*" element={<Navigate to="/" replace />} />
+        </Routes>
+      </Router>
+    </ThemeProvider>
   );
 }
 
-export default App
+export default App;
