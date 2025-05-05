@@ -1,11 +1,11 @@
 package com.devdogukan.tasks.services.impl;
 
+import java.time.LocalDateTime;
 import java.util.List;
 
 import org.springframework.stereotype.Service;
 
-import com.devdogukan.tasks.domain.dtos.TaskListDto;
-import com.devdogukan.tasks.mappers.TaskListMapper;
+import com.devdogukan.tasks.domain.entities.TaskList;
 import com.devdogukan.tasks.repositories.TaskListRepository;
 import com.devdogukan.tasks.services.TaskListService;
 
@@ -13,19 +13,34 @@ import com.devdogukan.tasks.services.TaskListService;
 public class TaskListServiceImpl implements TaskListService {
 
     private final TaskListRepository taskListRepository;
-    private final TaskListMapper taskListMapper;
 
-    public TaskListServiceImpl(final TaskListRepository taskListRepository, final TaskListMapper taskListMapper) {
+    public TaskListServiceImpl(final TaskListRepository taskListRepository) {
         this.taskListRepository = taskListRepository;
-        this.taskListMapper = taskListMapper;
     }
 
     @Override
-    public List<TaskListDto> listTaskLists() {
-        return taskListRepository.findAll()
-                .stream()
-                .map(taskListMapper::toDto)
-                .toList();
+    public List<TaskList> listTaskLists() {
+        return taskListRepository.findAll();
+    }
+
+    @Override
+    public TaskList createTaskList(TaskList taskList) {
+        if (taskList.getId() != null) {
+            throw new IllegalArgumentException("Task list already has an ID!");
+        }
+        if (taskList.getTitle() == null || taskList.getTitle().isBlank()) {
+            throw new IllegalArgumentException("Task list title must be present!");
+        }
+
+        LocalDateTime now = LocalDateTime.now();
+
+        return taskListRepository.save(new TaskList(
+                null,
+                taskList.getTitle(),
+                taskList.getDescription(),
+                null,
+                now,
+                now));
     }
 
 }

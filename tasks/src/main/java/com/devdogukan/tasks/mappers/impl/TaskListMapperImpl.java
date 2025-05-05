@@ -1,5 +1,6 @@
 package com.devdogukan.tasks.mappers.impl;
 
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
 import org.springframework.stereotype.Component;
@@ -22,6 +23,8 @@ public class TaskListMapperImpl implements TaskListMapper {
 
     @Override
     public TaskList fromDto(TaskListDto taskListDto) {
+        LocalDateTime now = LocalDateTime.now();
+
         return new TaskList(
                 taskListDto.id(),
                 taskListDto.title(),
@@ -31,8 +34,8 @@ public class TaskListMapperImpl implements TaskListMapper {
                                 .map(taskMapper::fromDto)
                                 .toList())
                         .orElse(null),
-                null,
-                null);
+                        now,
+                        now);
     }
 
     @Override

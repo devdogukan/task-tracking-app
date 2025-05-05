@@ -2,8 +2,9 @@ package com.devdogukan.tasks.services;
 
 import java.util.List;
 
-import com.devdogukan.tasks.domain.dtos.TaskListDto;
+import com.devdogukan.tasks.domain.entities.TaskList;
 
 public interface TaskListService {
-    List<TaskListDto> listTaskLists();
+    List<TaskList> listTaskLists();
+    TaskList createTaskList(TaskList taskListDto);
 }
