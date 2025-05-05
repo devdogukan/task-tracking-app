@@ -14,6 +14,7 @@ import java.util.UUID;
 
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -63,6 +64,13 @@ public class TaskListController {
         TaskList updatedTaskLis = taskListService.updateTaskList(taskListId, taskListMapper.fromDto(taskListDto));
         return new ResponseEntity<>(taskListMapper.toDto(updatedTaskLis), HttpStatus.OK);
 
+    }
+
+    @DeleteMapping(path = "/{task_list_id}")
+    public ResponseEntity<?> deleteTaskList(@PathVariable("task_list_id") UUID taskListId) {
+        taskListService.deleteTaskList(taskListId);
+
+        return new ResponseEntity<>(HttpStatus.OK);
     }
 
 }
