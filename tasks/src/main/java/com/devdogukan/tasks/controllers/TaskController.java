@@ -4,14 +4,19 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.devdogukan.tasks.domain.dtos.TaskDto;
+import com.devdogukan.tasks.domain.entities.Task;
 import com.devdogukan.tasks.mappers.TaskMapper;
 import com.devdogukan.tasks.services.TaskService;
 
 import java.util.List;
 import java.util.UUID;
 
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 
 @RestController
 @RequestMapping(path = "/task-list/{task_list_id}/tasks")
@@ -31,6 +36,15 @@ public class TaskController {
                 .stream()
                 .map(taskMapper::toDto)
                 .toList();
+    }
+
+    @PostMapping
+    public ResponseEntity<TaskDto> createTask(
+            @PathVariable("task_list_id") UUID taskListId,
+            @RequestBody TaskDto taskDto) {
+        Task savedTask = taskService.createTask(taskListId, taskMapper.fromDto(taskDto));
+
+        return new ResponseEntity<>(taskMapper.toDto(savedTask), HttpStatus.OK);
     }
 
 }
