@@ -96,10 +96,6 @@ The backend provides RESTful APIs for managing task lists and tasks. For detaile
    ```
 4. Open the application in your browser at `http://localhost:5173`.
 
-## License
-
-This project is licensed under the Apache License 2.0.
-
 ## Contributing
 
 Contributions are welcome! Please feel free to submit a Pull Request.
